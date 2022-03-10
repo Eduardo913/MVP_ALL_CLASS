@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mvp_all/style/colors/colors_views.dart';
 
 class OnBoarding extends StatefulWidget {
   const OnBoarding({Key? key}) : super(key: key);
@@ -31,12 +32,14 @@ class _OnBoardingState extends State<OnBoarding> {
     },
   ];
 
+  int page = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          color: Colors.amber,
+          color: ColorsViews.whiteColor,
           child: SizedBox(
             width: double.infinity,
             child: Column(
@@ -45,6 +48,11 @@ class _OnBoardingState extends State<OnBoarding> {
                 Expanded(
                   flex: 3,
                   child: PageView.builder(
+                    onPageChanged: (value) {
+                      setState(() {
+                        page = value;
+                      });
+                    },
                     itemCount: boardingData.length,
                     itemBuilder: (context, index) => ContainerBoarding(
                       image: boardingData[index]['image']!,
@@ -54,8 +62,17 @@ class _OnBoardingState extends State<OnBoarding> {
                 ),
                 Expanded(
                   flex: 1,
-                  child: Container(
-                    color: Colors.blue,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(boardingData.length,
+                              (index) => _animateContainer(index: index)),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -63,6 +80,19 @@ class _OnBoardingState extends State<OnBoarding> {
           ),
         ),
       ),
+    );
+  }
+
+  AnimatedContainer _animateContainer({required int index}) {
+    return AnimatedContainer(
+      duration: kThemeAnimationDuration,
+      height: 4,
+      width: page == index ? 20 : 12,
+      margin: EdgeInsets.only(left: 8),
+      decoration: BoxDecoration(
+          color: page == index
+              ? ColorsViews.activeSliderColor
+              : ColorsViews.disableSliderColor),
     );
   }
 }
